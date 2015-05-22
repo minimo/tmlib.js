@@ -83,20 +83,38 @@ tm.display = tm.display || {};
         },
         
         /**
+         * 画像のトリミング設定
+         */
+        setFrameTrimming = function(x, y, width, height) {
+            this.frameTrimX = x || 0;
+            this.frameTrimY = y || 0;
+            this.frameTrimW = width || this.image.width - this.frameTrimX;
+            this.frameTrimH = height || this.image.height - this.frameTrimY;
+            return this;
+        },
+
+        /**
          * フレームインデックスをセット
          */
         setFrameIndex: function(index, width, height) {
+
+            //テクスチャのトリミング設定
+            var sx = this.frameTrimX || 0;
+            var sy = this.frameTrimY || 0;
+            var sw = this.frameTrimW || (this.image.width-sx);
+            var sh = this.frameTrimH || (this.image.height-sy);
+
             var tw  = width || this.width;      // tw
             var th  = height || this.height;    // th
-            var row = ~~(this.image.width / tw);
-            var col = ~~(this.image.height / th);
+            var row = ~~(sw / tw);
+            var col = ~~(sh / th);
             var maxIndex = row*col;
             index = index%maxIndex;
             
             var x   = index%row;
             var y   = ~~(index/row);
-            this.srcRect.x = x*tw;
-            this.srcRect.y = y*th;
+            this.srcRect.x = sx+x*tw;
+            this.srcRect.y = sy+y*th;
             this.srcRect.width  = tw;
             this.srcRect.height = th;
 

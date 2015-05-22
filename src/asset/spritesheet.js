@@ -101,10 +101,16 @@
         _calcFrames: function(frame) {
             var frames = this.frames = [];
             
+            //テクスチャのトリミング設定
+            var sx = frame.trimX || 0;
+            var sy = frame.trimY || 0;
+            var sw = frame.trimW || (this.image.width-sx);
+            var sh = frame.trimH || (this.image.height-sy);
+
             var w = frame.width;
             var h = frame.height;
-            var row = ~~(this.image.width / w);
-            var col = ~~(this.image.height/ h);
+            var row = ~~(sw / w);
+            var col = ~~(sh / h);
             
             if (!frame.count) frame.count = row*col;
 
@@ -112,8 +118,8 @@
                 var x   = i%row;
                 var y   = (i/row)|0;
                 var rect = {
-                    x:x*w,
-                    y:y*h,
+                    x:sx+x*w,
+                    y:sy+y*h,
                     width: w,
                     height: h
                 };
